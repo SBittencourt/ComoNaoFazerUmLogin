@@ -14,27 +14,23 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $name = $request->input('name');
-        $password = $request->input('password');
+        $name = $_POST['name']; 
+        $password = $_POST['password']; 
+    
+        $sql = "SELECT id FROM users WHERE name = '$name' and password = '$password'";
 
-        // Simulação do SQL (pra exibir na tela)
-        $simulatedSQL = "SELECT * FROM users WHERE name = $name AND password = $password";
-
-        // Consulta real (vulnerável!)
-        $sql = "SELECT * FROM users WHERE name = $name AND password = $password";
         $user = DB::select($sql);
 
         if (!empty($user)) {
             return response()->make("
                 <h1>✅ Login bem-sucedido!</h1>
-                <p><strong>Usuário autenticado:</strong> {$user[0]->name}</p>
                 <hr>
                 <h3>🔎 Dados recebidos:</h3>
                 <p>Nome: $name</p>
                 <p>Senha: $password</p>
                 <hr>
                 <h3>🚨 SQL Executado:</h3>
-                <pre>$simulatedSQL</pre>
+                <pre>$sql</pre>
             ", 200, ['Content-Type' => 'text/html']);
         } else {
             return response()->make("
@@ -44,7 +40,7 @@ class LoginController extends Controller
                 <p>Senha: $password</p>
                 <hr>
                 <h3>🚨 SQL Executado:</h3>
-                <pre>$simulatedSQL</pre>
+                <pre>$sql</pre>
             ", 200, ['Content-Type' => 'text/html']);
         }
     }
